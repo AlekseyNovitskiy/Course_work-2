@@ -1,6 +1,5 @@
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 public class PullTask {
     private Map<Integer,Task> pullTask= new HashMap<>();
@@ -58,8 +57,77 @@ public class PullTask {
         return pullTask;
     }
 
-    public Collection<Task> getTasks() {
-        return this.pullTask.values();
+    public Collection<Task> getTasks(LocalDate dateTasks) {
+        Set<Task> setTasks = new HashSet<>();
+        for (Task currentTask: this.pullTask.values()) {
+            if (!currentTask.getDateCreate().isAfter(dateTasks)) {  // Смотрим только на задачи с датой создания до
+                if(currentTask.getRepeat().equals(TypeRepeat.DAILY.getName()))
+                {
+                    setTasks.add(currentTask);
+                }
+                else
+                {
+                    if(checkDateIn(currentTask.getDateCreate(), dateTasks, currentTask.getRepeat()))
+                    {
+                        setTasks.add(currentTask);
+                    }
+                }
+            }
+        }
+        return setTasks;
+    }
+
+    public boolean checkDateIn(LocalDate dateTask, LocalDate dateOut, String typeTaskRepeat)
+    {
+        switch (typeTaskRepeat) {
+            case "однократная":
+                if(dateTask.equals(dateOut)) {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case "еженедельная":
+                while (dateTask.isBefore(dateOut))
+                {
+                    dateTask = dateTask.plusDays(7);
+                }
+                if(dateTask.equals(dateOut)) {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case "ежемесячная":
+                while (dateTask.isBefore(dateOut))
+                {
+                    dateTask = dateTask.plusMonths(1);
+                }
+                if(dateTask.equals(dateOut)) {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            case "ежегодная":
+                while (dateTask.isBefore(dateOut))
+                {
+                    dateTask = dateTask.plusYears(1);
+                }
+                if(dateTask.equals(dateOut)) {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            default:
+                return false;
+        }
+
     }
 
     @Override

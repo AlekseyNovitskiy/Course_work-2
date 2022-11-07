@@ -160,22 +160,9 @@ public class Main {
             String dateForTasks = scanner.nextLine();
             try {
                 dateTasks = LocalDate.parse(dateForTasks);
-                PullTask datePullTasks = new PullTask();
-                for (Task currentTask: newPull.getTasks()) {
-                    if (!currentTask.getDateCreate().isAfter(dateTasks)) {  // Смотрим только на задачи с датой создания до
-                        if(currentTask.getRepeat().equals(TypeRepeat.DAILY.getName()))
-                        {
-                            System.out.println(currentTask);
-                        }
-                        else
-                        {
-                            if(checkDateIn(currentTask.getDateCreate(), dateTasks, currentTask.getRepeat()))
-                            {
-                                System.out.println(currentTask);
-                            }
-                        }
-                    }
-                }
+                System.out.println("Список задач на " + dateTasks.toString()+":");
+                for (Task currentTask: newPull.getTasks(dateTasks))
+                    System.out.println("● " + currentTask.getHeading());
                 flag = false;
             } catch (DateTimeParseException ex) {
                 System.out.println("Введено некорректное значение");
@@ -192,57 +179,6 @@ public class Main {
         System.out.println("1. Удалить задачу по ID\n2. Вывести все задачи\n0. Обратно в меню");
     }
 
-    public static boolean checkDateIn(LocalDate dateTask, LocalDate dateOut, String typeTaskRepeat)
-    {
-        switch (typeTaskRepeat) {
-            case "однократная":
-                if(dateTask.equals(dateOut)) {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "еженедельная":
-                while (dateTask.isBefore(dateOut))
-                {
-                    dateTask = dateTask.plusDays(7);
-                }
-                if(dateTask.equals(dateOut)) {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "ежемесячная":
-                while (dateTask.isBefore(dateOut))
-                {
-                    dateTask = dateTask.plusMonths(1);
-                }
-                if(dateTask.equals(dateOut)) {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "ежегодная":
-                while (dateTask.isBefore(dateOut))
-                {
-                    dateTask = dateTask.plusYears(1);
-                }
-                if(dateTask.equals(dateOut)) {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            default:
-                return false;
-        }
 
-    }
 
 }
