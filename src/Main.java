@@ -39,6 +39,8 @@ public class Main {
             }
         }
     }
+
+
     private static Task inputTask(Scanner scanner) {
         scanner.nextLine();
         System.out.print("Введите название задачи: \n");
